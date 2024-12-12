@@ -1,13 +1,6 @@
-import { Component } from '@angular/core';
+import { Task } from "../models/task";
 
-export interface PeriodicElement {
-  id: number;
-  title: string;
-  description: string;
-  state: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
+export const Tasks: Task[] = [
     { id: 1, title: "Scrivere documentazione API", description: "Scrivere la documentazione per le API del sistema di gestione utenti.", state: "da fare" },
     { id: 2, title: "Fix bug nella funzione di login", description: "Correggere il bug che impedisce agli utenti di accedere con le credenziali corrette.", state: "in corso" },
     { id: 3, title: "Preparare report settimanale", description: "Compilare il report delle attività della settimana per il team di marketing.", state: "fatto" },
@@ -29,36 +22,3 @@ const ELEMENT_DATA: PeriodicElement[] = [
     { id: 19, title: "Contattare il fornitore", description: "Contattare il fornitore per ottenere un aggiornamento sulla consegna dei materiali.", state: "da fare" },
     { id: 20, title: "Verifica sicurezza software", description: "Eseguire un'analisi approfondita sulla sicurezza dell'applicazione per evitare vulnerabilità.", state: "in corso" }
 ];
-
-@Component({
-  selector: 'app-task',
-  templateUrl: './task.component.html',
-  styleUrls: ['./task.component.css']
-})
-export class TaskComponent {
-  displayedColumns: string[] = ['title', 'description', 'state', 'actions'];
-  dataSource = ELEMENT_DATA;
-  filteredDataSource = ELEMENT_DATA;
-
-  // Metodo per ottenere l'icona in base allo stato
-  getIcon(state: string): string {
-    switch (state) {
-      case 'fatto': return 'check_circle'; // Icona verde
-      case 'da fare': return 'cancel'; // Icona rossa
-      case 'in corso': return 'hourglass_empty'; // Icona gialla
-      default: return 'help';
-    }
-  }
-
-  // Funzione modifica task
-  editTask(task: PeriodicElement) {
-    console.log("Modifica task:", task);
-    // Aggiungi logica per modificare il task
-  }
-
-  // Funzione elimina task
-  deleteTask(task: PeriodicElement) {
-    console.log("Elimina task:", task);
-    this.dataSource = this.dataSource.filter(t => t.id !== task.id);
-  }
-}
