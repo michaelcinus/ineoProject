@@ -5,7 +5,6 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
-import { style } from '@angular/animations';
 
 @Component({
   selector: 'app-task',
@@ -17,13 +16,17 @@ export class TaskComponent {
   displayedColumns: string[] = ['title', 'description', 'state', 'actions'];
   dataSource : MatTableDataSource<Task>;
 
-  taskSelected?: Task;
+  tasks: Task[] = [];
+  taskSelected: Task;
+
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private modal: MatDialog,) {
-    this.dataSource = new MatTableDataSource(Tasks);
+    this.tasks = Tasks;
+    this.taskSelected = this.tasks[0];
+    this.dataSource = new MatTableDataSource(this.tasks);
   }
 
   ngAfterViewInit() {
@@ -42,7 +45,7 @@ export class TaskComponent {
 
   // Funzione apri modale Edit
   openEditModal(modale : any, task: Task) {
-    this.taskSelected = task;
+    this.taskSelected = {...task};
     this.modal.open(modale, {
       width: '500px'
     });
@@ -50,7 +53,7 @@ export class TaskComponent {
 
   // Funzione apri modale Delete
   openDeleteModal(modale : any, task: Task) {
-    this.taskSelected = task;
+    this.taskSelected = {...task};
     this.modal.open(modale, {
       width: '500px'
     });
@@ -64,6 +67,35 @@ export class TaskComponent {
   //Funzione Add Task
 
   //Funzione Edit Task
+  editTask(task: Task) {
+  // Trova l'indice del task da modificare
+  const index = this.tasks.findIndex(t => t.id === task.id);
+
+  if (index !== -1) {
+    // Aggiorna il task nell'array e la lista
+    this.tasks[index] = task;
+    this.dataSource.data = this.tasks;
+  }
+
+  // Chiudi la modale
+  this.modal.closeAll();
+
+  }
 
   //Funzione Delete Task
+  deleteTask(id?: number) {
+    // Trova l'indice del task da modificare
+    const index = this.tasks.findIndex(t => t.id === id);
+
+  if (index !== -1) {
+    // Elimino il task nell'array e aggiorno la lista
+    this.tasks.splice(index, 1);
+    this.dataSource.data = this.tasks;
+  }
+
+  // Chiudi la modale
+  this.modal.closeAll();
+
+  }
+
 }

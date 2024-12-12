@@ -57,13 +57,32 @@
 
 <ng-template #modalEditTemplate>
   <div style="max-width: 600px">
-    <div mat-dialog-content class="tw-text-sm corpoModale log-mod">
+    <div mat-dialog-content>
       <p class="m-0">
-        Vuoi modificare il task: {{taskSelected?.title}}
+        Vuoi modificare il task: {{taskSelected.title}}
       </p>
+      <mat-form-field style="width: 100%;">
+        <mat-label>Title</mat-label>
+        <input matInput [(ngModel)]="taskSelected.title">
+      </mat-form-field>
+      <br>
+      <mat-form-field style="width: 100%;">
+        <mat-label>Description</mat-label>
+        <textarea matInput [(ngModel)]="taskSelected.description"></textarea>
+      </mat-form-field>
+      <br>
+      <mat-form-field style="width: 100%;">
+        <mat-label>State</mat-label>
+        <mat-select [(ngModel)]="taskSelected.state">
+          <mat-option value="fatto">Fatto</mat-option>
+          <mat-option value="in corso">In Corso</mat-option>
+          <mat-option value="da fare">Da Fare</mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
-    <div mat-dialog-actions>
+    <div mat-dialog-actions style="width: 100%; margin-bottom: 20px; ">
       <button mat-stroked-button (click)="closeModal()">ANNULLA</button>
+      <button mat-stroked-button (click)="editTask(taskSelected)">MODIFICA</button>
     </div>
   </div>
 </ng-template>
@@ -72,11 +91,12 @@
   <div style="max-width: 600px">
     <div mat-dialog-content class="tw-text-sm corpoModale log-mod">
       <p class="m-0">
-        Attenzione stai per eliminare definitivamente dall’applicazione il task: {{taskSelected?.title}}
+        Vuoi eliminare il task: {{taskSelected.title}}
       </p>
     </div>
     <div mat-dialog-actions>
       <button mat-stroked-button (click)="closeModal()">ANNULLA</button>
+      <button mat-stroked-button (click)="deleteTask(taskSelected.id)">ELIMINA</button>
     </div>
   </div>
 </ng-template>
