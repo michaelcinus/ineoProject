@@ -17,7 +17,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class TaskComponent {
   loading = true;
 
-  displayedColumns: string[] = ['title', 'description', 'state', 'actions'];
+  displayedColumns: string[] = ['title', 'description', 'status', 'actions'];
   dataSource : MatTableDataSource<Task> = new MatTableDataSource;
 
   taskForm: FormGroup;
@@ -26,7 +26,6 @@ export class TaskComponent {
 
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private modal: MatDialog,
@@ -38,18 +37,12 @@ export class TaskComponent {
     this.taskForm = this.fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
-      state: ['', Validators.required]
+      status: ['', Validators.required]
     });
   }
 
   ngOnInit() {
     this.getAllTask();
-  }
-
-  ngAfterViewInit() {
-    // il matSort viene assegnato alla datasource dopo che la vista è stata completamente caricata
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
   }
 
   getAllTask(){
@@ -59,6 +52,7 @@ export class TaskComponent {
         next: (res) => {
           this.tasks = res;
           this.dataSource.data = this.tasks;
+          this.dataSource.paginator = this.paginator;
           this.loading = false;
         },
         error: (err) => {

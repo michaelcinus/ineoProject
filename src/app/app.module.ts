@@ -9,7 +9,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule} from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSortModule } from '@angular/material/sort';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCardModule } from '@angular/material/card';
 
@@ -48,7 +47,6 @@ import { HttpClientModule } from '@angular/common/http';
     MatInputModule,
     MatDialogModule,
     MatFormFieldModule,
-    MatSortModule,
     MatPaginatorModule,
     MatSelectModule,
     MatSnackBarModule,

@@ -13,3 +13,7 @@
   text-align: center;
   justify-content: center;
 }
+
+.example-card:hover {
+  opacity: 0.5;
+}
