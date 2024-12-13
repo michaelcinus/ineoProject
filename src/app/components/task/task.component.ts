@@ -26,6 +26,7 @@ export class TaskComponent {
 
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private modal: MatDialog,
@@ -43,6 +44,14 @@ export class TaskComponent {
 
   ngOnInit() {
     this.getAllTask();
+    this.dataSource.sort = this.sort;
+    console.log('sono qui' + this.dataSource.sort)
+
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   getAllTask(){
@@ -52,7 +61,6 @@ export class TaskComponent {
         next: (res) => {
           this.tasks = res;
           this.dataSource.data = this.tasks;
-          this.dataSource.paginator = this.paginator;
           this.loading = false;
         },
         error: (err) => {

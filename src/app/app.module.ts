@@ -22,6 +22,7 @@ import { ContactComponent } from './components/contact/contact.component';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { MatSortModule } from '@angular/material/sort';
 
 
 
@@ -50,7 +51,8 @@ import { HttpClientModule } from '@angular/common/http';
     MatPaginatorModule,
     MatSelectModule,
     MatSnackBarModule,
-    MatCardModule
+    MatCardModule,
+    MatSortModule
   ],
   providers: [],
   bootstrap: [AppComponent]
