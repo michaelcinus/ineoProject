@@ -1,11 +1,17 @@
 <div class="container">
-  <mat-form-field>
-    <mat-label>Search Task</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Title o Description" #input>
-  </mat-form-field>
+  <div style="display: flex; justify-content: space-between;">
+    <mat-form-field>
+      <mat-label>Search Task</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Title o Description" #input>
+    </mat-form-field>
+
+    <button mat-fab style="background-color: lightgray;" (click)="openAddModal(modalAddTemplate)">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
 
   <!-- Table -->
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 table" matSort>
 
     <!-- Title Column -->
     <ng-container matColumnDef="title">
@@ -55,6 +61,38 @@
   <mat-paginator [pageSizeOptions]="[5, 10, 15, 20]" aria-label="Select page of users"></mat-paginator>
 </div>
 
+<ng-template #modalAddTemplate>
+  <div style="max-width: 600px">
+    <div mat-dialog-content>
+      <p class="m-0">
+        Vuoi creare un nuovo task
+      </p>
+      <mat-form-field style="width: 100%;">
+        <mat-label>Title</mat-label>
+        <input matInput placeholder="Inserisci il Title della Task">
+      </mat-form-field>
+      <br>
+      <mat-form-field style="width: 100%;">
+        <mat-label>Description</mat-label>
+        <textarea matInput placeholder="Inserisci la Description della Task"></textarea>
+      </mat-form-field>
+      <br>
+      <mat-form-field style="width: 100%;">
+        <mat-label>State</mat-label>
+        <mat-select placeholder="Inserisci lo State della Task">
+          <mat-option value="fatto">Fatto</mat-option>
+          <mat-option value="in corso">In Corso</mat-option>
+          <mat-option value="da fare">Da Fare</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div mat-dialog-actions style="width: 100%; margin-bottom: 20px; ">
+      <button mat-stroked-button (click)="closeModal()">ANNULLA</button>
+      <button mat-stroked-button (click)="addTask(taskSelected)">CREA</button>
+    </div>
+  </div>
+</ng-template>
+
 <ng-template #modalEditTemplate>
   <div style="max-width: 600px">
     <div mat-dialog-content>
@@ -63,17 +101,17 @@
       </p>
       <mat-form-field style="width: 100%;">
         <mat-label>Title</mat-label>
-        <input matInput [(ngModel)]="taskSelected.title">
+        <input matInput placeholder="Inserisci il Title della Task" [(ngModel)]="taskSelected.title">
       </mat-form-field>
       <br>
       <mat-form-field style="width: 100%;">
         <mat-label>Description</mat-label>
-        <textarea matInput [(ngModel)]="taskSelected.description"></textarea>
+        <textarea matInput placeholder="Inserisci la Description della Task" [(ngModel)]="taskSelected.description"></textarea>
       </mat-form-field>
       <br>
       <mat-form-field style="width: 100%;">
         <mat-label>State</mat-label>
-        <mat-select [(ngModel)]="taskSelected.state">
+        <mat-select placeholder="Inserisci lo State della Task" [(ngModel)]="taskSelected.state">
           <mat-option value="fatto">Fatto</mat-option>
           <mat-option value="in corso">In Corso</mat-option>
           <mat-option value="da fare">Da Fare</mat-option>

@@ -1,10 +1,10 @@
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { Task } from 'src/app/models/task';
-import { Tasks } from 'src/app/mocks/tasks'
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
+import { TaskService } from 'src/app/service/task.service';
 
 @Component({
   selector: 'app-task',
@@ -23,8 +23,11 @@ export class TaskComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private modal: MatDialog,) {
-    this.tasks = Tasks;
+  constructor(
+    private modal: MatDialog,
+    private taskService: TaskService
+  ) {
+    this.tasks = this.taskService.getAllTasks();
     this.taskSelected = this.tasks[0];
     this.dataSource = new MatTableDataSource(this.tasks);
   }
@@ -41,6 +44,13 @@ export class TaskComponent {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  // Funzione apri modale Add
+  openAddModal(modale : any) {
+    this.modal.open(modale, {
+      width: '500px'
+    });
   }
 
   // Funzione apri modale Edit
@@ -65,17 +75,25 @@ export class TaskComponent {
   }
 
   //Funzione Add Task
+  addTask(task: Task) {
+    // Passo il nuovo task al service che lo aggiunge
+    this.taskService.addTask(task);
+
+    // Aggiorna la lista
+    this.dataSource.data = this.taskService.getAllTasks();;
+
+    // Chiudi la modale
+    this.modal.closeAll();
+
+    }
 
   //Funzione Edit Task
   editTask(task: Task) {
-  // Trova l'indice del task da modificare
-  const index = this.tasks.findIndex(t => t.id === task.id);
+  // Passo il task modificato al service che lo modifica
+  this.taskService.editTask(task);
 
-  if (index !== -1) {
-    // Aggiorna il task nell'array e la lista
-    this.tasks[index] = task;
-    this.dataSource.data = this.tasks;
-  }
+  // Aggiorna la lista
+  this.dataSource.data = this.taskService.getAllTasks();;
 
   // Chiudi la modale
   this.modal.closeAll();
@@ -84,16 +102,13 @@ export class TaskComponent {
 
   //Funzione Delete Task
   deleteTask(id?: number) {
-    // Trova l'indice del task da modificare
-    const index = this.tasks.findIndex(t => t.id === id);
+  // Passo l'id al Service che elimina il task
+  this.taskService.deleteTask(id);
 
-  if (index !== -1) {
-    // Elimino il task nell'array e aggiorno la lista
-    this.tasks.splice(index, 1);
-    this.dataSource.data = this.tasks;
-  }
+  // aggiorno la lista
+  this.dataSource.data = this.taskService.getAllTasks();
 
-  // Chiudi la modale
+  // Chiude la modale
   this.modal.closeAll();
 
   }
