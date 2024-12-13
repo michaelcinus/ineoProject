@@ -18,7 +18,7 @@
   </div>
 
   <!-- Table -->
-  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 table">
+  <table *ngIf="!loading" mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 table">
 
     <!-- Title Column -->
     <ng-container matColumnDef="title">
