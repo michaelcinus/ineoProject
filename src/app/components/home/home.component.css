@@ -1,0 +1,15 @@
+.container{
+  display: flex;
+  max-width: 100wh;
+  margin: 20px;
+}
+
+.example-card {
+  cursor: pointer;
+  width: 50%;
+  height: 400px;
+  margin: 30px;
+  background-color: aliceblue;
+  text-align: center;
+  justify-content: center;
+}
