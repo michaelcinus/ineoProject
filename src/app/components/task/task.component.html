@@ -10,8 +10,15 @@
     </button>
   </div>
 
+  <!-- Skeleton Loader  -->
+  <div *ngIf="loading" class="skeleton-loader">
+    <div class="skeleton-table"></div>
+    <div class="skeleton-table"></div>
+    <div class="skeleton-table"></div>
+  </div>
+
   <!-- Table -->
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 table" matSort>
+  <table *ngIf="!loading" mat-table [dataSource]="dataSource" class="mat-elevation-z8 table" matSort>
 
     <!-- Title Column -->
     <ng-container matColumnDef="title">
@@ -51,8 +58,8 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
-    <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+    <tr class="mat-row" style="text-align: center;" *matNoDataRow>
+      <td class="mat-cell" colspan="4">Nessuna task trovata con questo Title o Description "{{input.value}}"</td>
     </tr>
   </table>
 </div>
@@ -65,30 +72,32 @@
   <div style="max-width: 600px">
     <div mat-dialog-content>
       <p class="m-0">
-        Vuoi creare un nuovo task
+        Vuoi creare un nuovo task?
       </p>
-      <mat-form-field style="width: 100%;">
-        <mat-label>Title</mat-label>
-        <input matInput placeholder="Inserisci il Title della Task">
-      </mat-form-field>
-      <br>
-      <mat-form-field style="width: 100%;">
-        <mat-label>Description</mat-label>
-        <textarea matInput placeholder="Inserisci la Description della Task"></textarea>
-      </mat-form-field>
-      <br>
-      <mat-form-field style="width: 100%;">
-        <mat-label>State</mat-label>
-        <mat-select placeholder="Inserisci lo State della Task">
-          <mat-option value="fatto">Fatto</mat-option>
-          <mat-option value="in corso">In Corso</mat-option>
-          <mat-option value="da fare">Da Fare</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div mat-dialog-actions style="width: 100%; margin-bottom: 20px; ">
+      <form [formGroup]="taskForm" (ngSubmit)="addTask()">
+        <mat-form-field style="width: 100%;">
+          <mat-label>Title</mat-label>
+          <input matInput formControlName="title" placeholder="Inserisci il Title della Task">
+        </mat-form-field>
+        <br>
+        <mat-form-field style="width: 100%;">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description" placeholder="Inserisci la Description della Task"></textarea>
+        </mat-form-field>
+        <br>
+        <mat-form-field style="width: 100%;">
+          <mat-label>State</mat-label>
+          <mat-select formControlName="state" placeholder="Inserisci lo State della Task">
+            <mat-option value="fatto">Fatto</mat-option>
+            <mat-option value="in corso">In Corso</mat-option>
+            <mat-option value="da fare">Da Fare</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div mat-dialog-actions style="width: 100%; margin-bottom: 20px; ">
+          <button mat-stroked-button [disabled]="taskForm.invalid">CREA</button>
+        </div>
+      </form>
       <button mat-stroked-button (click)="closeModal()">ANNULLA</button>
-      <button mat-stroked-button (click)="addTask(taskSelected)">CREA</button>
     </div>
   </div>
 </ng-template>
@@ -120,7 +129,7 @@
     </div>
     <div mat-dialog-actions style="width: 100%; margin-bottom: 20px; ">
       <button mat-stroked-button (click)="closeModal()">ANNULLA</button>
-      <button mat-stroked-button (click)="editTask(taskSelected)">MODIFICA</button>
+      <button mat-stroked-button [disabled]="!taskSelected.title || !taskSelected.description || !taskSelected.state" (click)="editTask(taskSelected)">MODIFICA</button>
     </div>
   </div>
 </ng-template>

@@ -1,10 +1,12 @@
-import { Component, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Task } from 'src/app/models/task';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { TaskService } from 'src/app/service/task.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-task',
@@ -13,11 +15,14 @@ import { TaskService } from 'src/app/service/task.service';
 })
 
 export class TaskComponent {
-  displayedColumns: string[] = ['title', 'description', 'state', 'actions'];
-  dataSource : MatTableDataSource<Task>;
+  loading = true;
 
+  displayedColumns: string[] = ['title', 'description', 'state', 'actions'];
+  dataSource : MatTableDataSource<Task> = new MatTableDataSource;
+
+  taskForm: FormGroup;
   tasks: Task[] = [];
-  taskSelected: Task;
+  taskSelected: Task = this.tasks[0];
 
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -25,11 +30,30 @@ export class TaskComponent {
 
   constructor(
     private modal: MatDialog,
-    private taskService: TaskService
+    private taskService: TaskService,
+    private fb: FormBuilder,
+    private snackBar: MatSnackBar,
   ) {
-    this.tasks = this.taskService.getAllTasks();
-    this.taskSelected = this.tasks[0];
-    this.dataSource = new MatTableDataSource(this.tasks);
+    // Inizializzo il form
+    this.taskForm = this.fb.group({
+      title: ['', Validators.required],
+      description: ['', Validators.required],
+      state: ['', Validators.required]
+    });
+  }
+
+  ngOnInit() {
+    this.getAllTask();
+  }
+
+  getAllTask(){
+    this.taskService.getAllTasks().subscribe({
+      next: (res) => {
+        this.tasks = res;
+        this.loading = false;
+        this.dataSource.data = this.tasks;
+      }
+    });
   }
 
   ngAfterViewInit() {
@@ -75,42 +99,95 @@ export class TaskComponent {
   }
 
   //Funzione Add Task
-  addTask(task: Task) {
+  addTask() {
+    const taskAdded = this.taskForm.value;
     // Passo il nuovo task al service che lo aggiunge
-    this.taskService.addTask(task);
-
-    // Aggiorna la lista
-    this.dataSource.data = this.taskService.getAllTasks();;
-
-    // Chiudi la modale
-    this.modal.closeAll();
+    this.taskService.addTask(taskAdded).subscribe({
+      next : () => {
+      // Aggiorna la lista
+      this.getAllTask();
+      // Chiude la modale
+      this.closeModal();
+      // Resetto il form
+      this.taskForm.reset();
+      // apro snackbar di conferma
+      this.snackBar.open('La task è stata aggiunta', 'X', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 2000,
+        panelClass: ['success-snackbar'],
+      });
+      },
+      error: (err) => {
+        //apro snackbar di errore
+        this.snackBar.open('Qualcosa è andato storto', 'X', {
+          horizontalPosition: 'right',
+          verticalPosition: 'bottom',
+          duration: 2000,
+          panelClass: ['error-snackbar'],
+        });
+      }
+    })
 
     }
 
   //Funzione Edit Task
   editTask(task: Task) {
   // Passo il task modificato al service che lo modifica
-  this.taskService.editTask(task);
-
-  // Aggiorna la lista
-  this.dataSource.data = this.taskService.getAllTasks();;
-
-  // Chiudi la modale
-  this.modal.closeAll();
+  this.taskService.editTask(task).subscribe({
+    next : () => {
+      // Aggiorna la lista
+      this.getAllTask();
+      // Chiude la modale
+      this.closeModal();
+      // apro snackbar di conferma
+      this.snackBar.open('La task è stata modificata', 'X', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 2000,
+        panelClass: ['success-snackbar'],
+      });
+    },
+    error: (err) => {
+      //apro snackbar di errore
+      this.snackBar.open('Qualcosa è andato storto', 'X', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 2000,
+        panelClass: ['error-snackbar'],
+      });
+    }
+  });
 
   }
 
   //Funzione Delete Task
-  deleteTask(id?: number) {
+  deleteTask(id: number) {
   // Passo l'id al Service che elimina il task
-  this.taskService.deleteTask(id);
-
-  // aggiorno la lista
-  this.dataSource.data = this.taskService.getAllTasks();
-
-  // Chiude la modale
-  this.modal.closeAll();
-
+  this.taskService.deleteTask(id).subscribe({
+    next: () => {
+      // Aggiorna la lista
+      this.getAllTask();
+      // Chiude la modale
+      this.closeModal();
+      // apro snackbar di conferma
+      this.snackBar.open('La task è stata eliminata', 'X', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 2000,
+        panelClass: ['success-snackbar'],
+      });
+    },
+    error: (err) => {
+      //apro snackbar di errore
+      this.snackBar.open('Qualcosa è andato storto', 'X', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 2000,
+        panelClass: ['error-snackbar'],
+      });
+    }
+  });
   }
 
 }
