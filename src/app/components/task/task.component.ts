@@ -46,19 +46,27 @@ export class TaskComponent {
     this.getAllTask();
   }
 
-  getAllTask(){
-    this.taskService.getAllTasks().subscribe({
-      next: (res) => {
-        this.tasks = res;
-        this.loading = false;
-        this.dataSource.data = this.tasks;
-      }
-    });
-  }
-
   ngAfterViewInit() {
+    // il matSort viene assegnato alla datasource dopo che la vista è stata completamente caricata
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  }
+
+  getAllTask(){
+    // Ritardo il caricamento dei task
+    setTimeout(() => {
+      this.taskService.getAllTasks().subscribe({
+        next: (res) => {
+          this.tasks = res;
+          this.dataSource.data = this.tasks;
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Errore nel caricamento dei task', err);
+          this.loading = false;
+        }
+      });
+    }, 1000);
   }
 
   applyFilter(event: Event) {
@@ -96,10 +104,13 @@ export class TaskComponent {
   // Funzione chiudi modale
   closeModal(){
     this.modal.closeAll();
+    // Resetto il form
+    this.taskForm.reset();
   }
 
   //Funzione Add Task
   addTask() {
+    this.loading = true;
     const taskAdded = this.taskForm.value;
     // Passo il nuovo task al service che lo aggiunge
     this.taskService.addTask(taskAdded).subscribe({
@@ -128,66 +139,66 @@ export class TaskComponent {
         });
       }
     })
-
-    }
+  }
 
   //Funzione Edit Task
   editTask(task: Task) {
-  // Passo il task modificato al service che lo modifica
-  this.taskService.editTask(task).subscribe({
-    next : () => {
-      // Aggiorna la lista
-      this.getAllTask();
-      // Chiude la modale
-      this.closeModal();
-      // apro snackbar di conferma
-      this.snackBar.open('La task è stata modificata', 'X', {
-        horizontalPosition: 'right',
-        verticalPosition: 'bottom',
-        duration: 2000,
-        panelClass: ['success-snackbar'],
-      });
-    },
-    error: (err) => {
-      //apro snackbar di errore
-      this.snackBar.open('Qualcosa è andato storto', 'X', {
-        horizontalPosition: 'right',
-        verticalPosition: 'bottom',
-        duration: 2000,
-        panelClass: ['error-snackbar'],
-      });
-    }
-  });
-
+    this.loading = true;
+    // Passo il task modificato al service che lo modifica
+    this.taskService.editTask(task).subscribe({
+      next : () => {
+        // Aggiorna la lista
+        this.getAllTask();
+        // Chiude la modale
+        this.closeModal();
+        // apro snackbar di conferma
+        this.snackBar.open('La task è stata modificata', 'X', {
+          horizontalPosition: 'right',
+          verticalPosition: 'bottom',
+          duration: 2000,
+          panelClass: ['success-snackbar'],
+        });
+      },
+      error: (err) => {
+        //apro snackbar di errore
+        this.snackBar.open('Qualcosa è andato storto', 'X', {
+          horizontalPosition: 'right',
+          verticalPosition: 'bottom',
+          duration: 2000,
+          panelClass: ['error-snackbar'],
+        });
+      }
+    });
   }
 
   //Funzione Delete Task
   deleteTask(id: number) {
-  // Passo l'id al Service che elimina il task
-  this.taskService.deleteTask(id).subscribe({
-    next: () => {
-      // Aggiorna la lista
-      this.getAllTask();
-      // Chiude la modale
-      this.closeModal();
-      // apro snackbar di conferma
-      this.snackBar.open('La task è stata eliminata', 'X', {
-        horizontalPosition: 'right',
-        verticalPosition: 'bottom',
-        duration: 2000,
-        panelClass: ['success-snackbar'],
-      });
-    },
-    error: (err) => {
-      //apro snackbar di errore
-      this.snackBar.open('Qualcosa è andato storto', 'X', {
-        horizontalPosition: 'right',
-        verticalPosition: 'bottom',
-        duration: 2000,
-        panelClass: ['error-snackbar'],
-      });
-    }
-  });
+    this.loading = true;
+    // Passo l'id al Service che elimina il task
+    this.taskService.deleteTask(id).subscribe({
+      next: () => {
+        // Aggiorna la lista
+        this.getAllTask();
+        // Chiude la modale
+        this.closeModal();
+        // apro snackbar di conferma
+        this.snackBar.open('La task è stata eliminata', 'X', {
+          horizontalPosition: 'right',
+          verticalPosition: 'bottom',
+          duration: 2000,
+          panelClass: ['success-snackbar'],
+        });
+      },
+      error: (err) => {
+        //apro snackbar di errore
+        this.snackBar.open('Qualcosa è andato storto', 'X', {
+          horizontalPosition: 'right',
+          verticalPosition: 'bottom',
+          duration: 2000,
+          panelClass: ['error-snackbar'],
+        });
+      }
+    });
   }
 
 }

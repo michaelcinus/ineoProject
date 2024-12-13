@@ -119,42 +119,6 @@
       "title": "Scrivere documentazione API",
       "description": "Scrivere la documentazione per le API del sistema di gestione utenti.",
       "state": "da fare"
-    },
-    {
-      "id": "6056",
-      "title": "prova add Task",
-      "description": "prova",
-      "state": "in corso"
-    },
-    {
-      "id": "eb9f",
-      "title": "",
-      "description": "",
-      "state": ""
-    },
-    {
-      "id": "80ce",
-      "title": null,
-      "description": null,
-      "state": null
-    },
-    {
-      "id": "7d12",
-      "title": null,
-      "description": null,
-      "state": null
-    },
-    {
-      "id": "6adf",
-      "title": "",
-      "description": "",
-      "state": ""
-    },
-    {
-      "id": "9140",
-      "title": null,
-      "description": null,
-      "state": null
     }
   ]
 }
